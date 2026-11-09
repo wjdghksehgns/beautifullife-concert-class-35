@@ -172,7 +172,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 #khead{position:absolute;top:0;left:0;right:0;height:104px;padding:54px 12px 0;display:flex;align-items:center;gap:6px;background:#bacee0;z-index:3}
 #khead .k-t{flex:1;font-size:17px;font-weight:600}#khead .k-t span{color:#555;font-weight:400;margin-left:5px}
 #khead svg{stroke:#222;fill:none;stroke-width:2;stroke-linecap:round}
-#chat{position:absolute;top:104px;left:0;right:0;bottom:72px;overflow-y:auto;padding:6px 10px 16px;transition:bottom .25s}
+#chat,#chatD{position:absolute;top:104px;left:0;right:0;bottom:72px;overflow-y:auto;padding:6px 10px 16px;transition:bottom .25s}
 #kinput{position:absolute;bottom:0;left:0;right:0;height:72px;background:#fff;display:flex;align-items:center;gap:10px;padding:0 12px 22px}
 #kinput .f{flex:1;height:36px;border-radius:18px;background:#f3f3f3;display:flex;align-items:center;padding:0 14px;font-size:14px;color:#aaa}
 #kinput svg{stroke:#888;fill:none;stroke-width:2;stroke-linecap:round}
@@ -207,6 +207,20 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 .notice ul{padding:0 14px 12px;font-size:14px;line-height:1.85;list-style:none}
 .notice ul b{color:#e26a00}
 
+
+.topic{text-align:center;margin:22px 0 12px;animation:pop .35s}.topic span{display:inline-block;background:#fff;color:#222;font-size:14px;font-weight:700;padding:9px 16px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.kcard{background:#fff;border-radius:4px 15px 15px 15px;width:262px;overflow:hidden}
+.kcard .h{padding:12px 14px 10px;font-size:15px;font-weight:700;border-bottom:1px solid #f0f0f0}
+.kcard .r{display:flex;gap:10px;padding:9px 14px;font-size:13.5px;line-height:1.5;border-bottom:1px solid #f6f6f6}
+.kcard .r b{flex:none;width:58px;color:#e26a00;font-weight:700}
+.kcard .f{text-align:center;padding:10px;font-size:13px;color:#2bb673;font-weight:700}
+.cand{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid #f6f6f6}
+.cav{width:40px;height:40px;border-radius:12px;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.cand b{font-size:14px}.cand small{font-size:12px;color:#888;margin-left:6px}.cand p{font-size:12.5px;color:#555;margin-top:2px;line-height:1.4}
+.bub.typing{display:flex;gap:4px;padding:13px 14px}
+.bub.typing i{width:7px;height:7px;border-radius:50%;background:#b5b5b5;animation:tdot 1s infinite}
+.bub.typing i:nth-child(2){animation-delay:.15s}.bub.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tdot{30%{transform:translateY(-4px);background:#888}}
 /* ===== 배너/토스트/시트 ===== */
 #banner{position:absolute;top:8px;left:8px;right:8px;z-index:70;border-radius:24px;padding:12px 14px;display:flex;gap:11px;align-items:center;
   background:rgba(245,245,247,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 10px 30px rgba(0,0,0,.25);
@@ -229,6 +243,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 #sheet .ver{display:inline-block;margin:14px 0 18px;padding:6px 14px;border-radius:14px;background:#fff;font-size:13px;color:#444}
 #sheet a,#sheet button.b{display:block;width:100%;height:50px;line-height:50px;border-radius:14px;font-size:16px;font-weight:600;text-decoration:none;margin-top:8px}
 #sheet a{background:#007aff;color:#fff}#sheet button.b{background:#fff;color:#007aff}
+#phone,.screen,#kakao{overflow:clip}
 #homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:138px;height:5px;border-radius:3px;background:#fff;z-index:65;cursor:pointer}
 #phone.dark #homebar{background:#000}
 </style>
@@ -368,11 +383,11 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
   <section class="screen" id="kakao">
     <div id="khead">
       <button id="kBack"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>
-      <div class="k-t">공연기획 35기<span>6</span></div>
+      <div class="k-t" id="kTitle">35기 공연 회의방<span>5</span></div>
       <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="M16 16l5 5"/></svg>
       <svg width="22" height="22" viewBox="0 0 24 24" style="margin-left:12px"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </div>
-    <div id="chat"></div>
+    <div id="chat"></div><div id="chatD" style="display:none"></div>
     <div id="choices"></div>
     <div id="kinput">
       <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -386,7 +401,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
   <div id="sheet"><div class="in">
     <div class="gear" data-icon="set"></div>
     <h3>소프트웨어 업데이트</h3>
-    <p>뷰라와 35기 팀의 공연 준비는<br><b>중편 업데이트</b>에서 이어져요!</p>
+    <p>콘셉트·섭외까지 끝!<br>이제 관객을 모을 차례예요.<br><b>2편 홍보편</b>에서 이어져요!</p>
     <div class="ver" id="nextVer"></div>
     <a href="https://xn--oi2bj6j3yi71lf1bywa.com/172" target="_blank" rel="noopener">나도 35기 신청하러 가기 ↗</a>
     <button class="b" id="replay">처음부터 다시 보기</button>
@@ -398,64 +413,72 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 /* ========= 여기만 고치면 되는 설정 ========= */
 const CONFIG = {
   password: "3535",
-  nextUpdate: "중편 업데이트 · 11월 ○일 공개 예정",
+  nextUpdate: "2편 홍보편 · 업데이트 예정",
 };
+/* 단톡방 사람들 */
 const PEOPLE = {
-  t:{name:"박지훈 강사님",c:"#4b4846"}, s:{name:"한서윤",c:"#e07a5f"}, m:{name:"정민재",c:"#3d85c6"},
-  h:{name:"오하은",c:"#8e6cc0"}, d:{name:"최도윤",c:"#2a9d8f"}
+  mg:{name:"35기 운영매니저",c:"#4b4846",av:"뷰"}, s:{name:"한서윤",c:"#e07a5f"}, m:{name:"정민재",c:"#3d85c6"},
+  h:{name:"오하은",c:"#8e6cc0"}, d:{name:"최도윤",c:"#2a9d8f"}, ar:{name:"매니저",c:"#d18b2c"}
 };
-/* 단톡방 대화. choice = 보는 사람이 뷰라 답장을 고르는 부분 */
+/* 섭외 후보 아티스트 (가상) */
+const ARTISTS = [
+  {name:"새벽세탁소", genre:"3인조 인디 밴드", note:"공연 영상 조회수가 꾸준히 오르는 중", mgr:"새벽세탁소 매니저 이준"},
+  {name:"서리온", genre:"싱어송라이터", note:"작은 무대 라이브가 강점, 첫 EP 발매", mgr:"서리온 매니저 김하람"},
+  {name:"오후세시", genre:"어쿠스틱 듀오", note:"버스킹으로 팬이 생기기 시작한 팀", mgr:"오후세시 매니저 박선"}
+];
+/* 대화 순서
+   who: s 서윤 / m 민재 / h 하은 / d 도윤 / ar 아티스트 매니저 / me 뷰라
+   topic = 화면 가운데 큰 주제 제목, choice = 보는 사람이 뷰라 답장 고르기, poll = 투표, card = 정리 카드
+   go:"dm" = 아티스트 1:1방으로 이동, go:"group" = 단톡방 알림 → 눌러서 복귀
+   {A} = 고른 아티스트, {T} = 투표로 정한 공연 이름, xxx / *** = 금액 자리(나중에 채우기) */
 const CHAT = [
-  {sys:"박지훈 강사님이 김뷰라님을 초대했습니다."},
-  {who:"t",text:"안녕하세요! 공연기획 실무강화 프로젝트 35기 단톡방입니다 😊"},
-  {who:"t",text:"이번 기수를 함께할 박지훈입니다. 3월까지 여러분이 한 팀이 되어 공연 하나를 처음부터 끝까지 직접 만들어 볼 거예요."},
-  {who:"t",text:"간단하게 자기소개 부탁드려요! 이름이랑 신청하게 된 이유 정도면 충분해요"},
-  {who:"s",text:"안녕하세요 한서윤입니다! 콘서트 기획사 취업 준비 중이에요 🙌"},
-  {who:"m",text:"정민재입니다. 공연장 스태프 알바는 해봤는데 기획은 처음이라 기대돼요"},
-  {choice:"뷰라의 자기소개를 골라주세요", opts:[
-    {me:"안녕하세요 김뷰라입니다! 공연을 보기만 하다가, 처음부터 끝까지 제 손으로 만들어보고 싶어서 신청했어요 🙌", then:[
-      {who:"t",text:"뷰라님 반가워요! 딱 그걸 하게 될 거예요 😊"}]},
-    {me:"김뷰라입니다! 공연기획자가 꿈이라 기획부터 현장까지 제대로 배워보고 싶어서 왔어요", then:[
-      {who:"t",text:"좋아요 뷰라님. 끝날 때쯤엔 '기획자 해봤다'고 말할 수 있을 거예요 😊"}]}
+  {sys:"한서윤님이 김뷰라님, 정민재님, 오하은님, 최도윤님을 초대했습니다."},
+  {day:"2026년 12월 27일 토요일 · 첫 수업 후", time:"오후 6:12"},
+  {who:"s",text:"다들 첫 수업 고생했어요! 우리끼리 공연 회의방 만들었어요 🙌"},
+  {who:"d",text:"오 좋아요! 바로 공연 얘기 해봐요"},
+
+  {topic:"주제 1 · 우리는 어떤 공연을 만들까?"},
+  {who:"s",text:"저는 작은 공연장에서 처음 보는 밴드한테 반해서 공연을 좋아하게 됐거든요. 그런 '발견'이 있는 공연 만들고 싶어요"},
+  {who:"d",text:"좋아요. 유명한 팀 공연은 어디서든 열리지만, 아직 무대가 없는 신인은 우리가 안 만들면 기회가 없을 수도 있어요"},
+  {who:"m",text:"근데 관객은 모르는 아티스트를 보러 올까요?"},
+  {choice:"민재의 질문에 뷰라는?", opts:[
+    {me:"우리도 페스티벌에서 모르는 팀 보다가 팬 된 적 있잖아요. 공연 전에 라이브 영상을 먼저 보여주면, 직접 와서 듣고 싶어질 거예요", then:[
+      {who:"m",text:"오 그럼 한 곡쯤은 알고 오겠네요. 좋다"}]},
+    {me:"그래서 아티스트를 잘 골라야죠. 우리가 자신 있게 '이 팀 꼭 보세요' 할 수 있는 팀이면 관객도 믿고 와요", then:[
+      {who:"m",text:"그 믿음 좋네요. 그럼 섭외가 진짜 중요하겠다"}]}
   ]},
-  {who:"h",text:"오하은이에요~ 무대 연출 쪽에 관심이 많아요!"},
-  {who:"d",text:"최도윤입니다! 공연 끝나고 관객들 나가는 거 보면서 '나도 저런 거 만들고 싶다' 싶었어요"},
-  {who:"t",text:"다들 반가워요 👏 첫 수업은 12월 27일이에요. 그날 바로 첫 기획 회의 들어갑니다!"},
-  {day:"2026년 12월 27일 토요일", time:"오후 6:12"},
-  {who:"t",text:"오늘 첫 수업 다들 고생 많았어요!"},
-  {who:"s",text:"첫날부터 회의라니 ㅋㅋ 근데 진짜 재밌었어요"},
-  {who:"t",text:"회의 때 못 다 한 공연 콘셉트 아이디어, 여기에 하나씩 더 올려볼까요? 아직 정해진 건 없으니 편하게!"},
-  {who:"m",text:"저는 관객이랑 같이 호흡하는 참여형 공연 좋을 것 같아요"},
-  {choice:"뷰라의 콘셉트 아이디어는?", opts:[
-    {me:"저는 20대가 공감할 '청춘' 이야기로 가면 좋겠어요! 중간중간 관객 사연도 읽어주고요", then:[
-      {who:"h",text:"오 사연 읽는 거 좋다! 무대 조명 낮추고 읽으면 분위기 장난 아닐 듯"}]},
-    {me:"겨울에 준비해서 봄에 올리니까 '봄, 시작'을 콘셉트로 하면 어때요? 무대도 포스터도 그림이 그려져요", then:[
-      {who:"s",text:"오 봄 콘셉트 너무 좋다 🌸 시작이라는 의미도 있고"}]}
+  {who:"h",text:"그렇게 객석 꽉 차면 티켓 수익도 생기고요 ㅋㅋ"},
+  {who:"s",text:"좋은 공연이면 따라오겠죠! 지금까지 얘기 정리해 볼게요 👇"},
+  {card:{by:"s",title:"📌 우리 공연 콘셉트", rows:[
+    ["콘셉트","신인 아티스트와 관객의 첫 만남"],
+    ["이유","우리도 작은 무대에서 아티스트를 '발견'하며 공연을 사랑하게 됐으니까"],
+    ["공연 이름","〈{T}〉"]
+  ], foot:"콘셉트 확정 ✓"}},
+
+  {topic:"주제 2 · 콘셉트에 맞는 아티스트 섭외"},
+  {who:"d",text:"'첫 만남' 콘셉트에 맞는 신인 3팀 찾아왔어요!"},
+  {cands:true},
+  {who:"s",text:"다 좋다… 뷰라님이 한 팀 먼저 연락해 볼래요?"},
+  {choice:"뷰라가 연락할 팀은?", opts:ARTISTS.map((a,i)=>({me:`저는 ${a.name}에 연락해 볼게요!`, set:i, then:[]}))},
+  {go:"dm"},
+  {who:"me",text:"안녕하세요! 뷰티풀라이프 공연기획 클래스 35기 김뷰라입니다 🙇‍♀️ 3월 소극장 공연 〈{T}〉에 {A}님을 모시고 싶어 연락드렸어요!"},
+  {who:"ar",text:"연락 감사해요 😊 좋은 기회네요! 다만 저희 개런티는 보통 xxx만 원 정도예요"},
+  {choice:"개런티 협의, 뷰라의 답장은?", opts:[
+    {me:"솔직하게 저희 예산은 ***만 원이에요. 대신 공연 영상·사진 원본이랑 SNS 홍보를 함께 해드릴게요!", then:[]},
+    {me:"신인 아티스트를 소개하는 공연이라 영상·사진이랑 홍보는 꼭 해드리고 싶어요. 예산 ***만 원으로 가능할까요?", then:[]}
   ]},
-  {who:"t",text:"좋네요. 민재님 참여형 아이디어랑 뷰라님 아이디어 합치면 방향 잡히겠어요 👍"},
-  {who:"t",text:"그럼 공연 이름도 투표로 정해볼게요 🗳️"},
-  {poll:{title:"우리 공연 이름은?",opts:[["우리가 만든 밤",2],["첫 번째 커튼콜",1],["오늘, 무대",1]]}},
-  {who:"d",text:"오 투표 결과 박빙이다 ㅋㅋ"},
-  {who:"t",text:"기획 회의는 매주 다 같이 하고, 각자 책임질 파트도 하나씩 정해요. 하고 싶은 파트 말해주세요!"},
-  {who:"s",text:"저는 전체 일정이랑 총괄 해볼게요"},
-  {who:"h",text:"무대·연출이요!"},
-  {who:"m",text:"티켓이랑 현장 운영 할게요"},
-  {choice:"뷰라가 맡고 싶은 파트는?", opts:[
-    {me:"저는 홍보 맡아볼게요! 기획 회의도 계속 같이 하면서 우리 공연 어떻게 알릴지 고민해볼게요 🔥", then:[
-      {who:"d",text:"그럼 저는 아티스트 섭외 할게요!"}]},
-    {me:"저는 아티스트 섭외 해보고 싶어요!", then:[
-      {who:"d",text:"헉 섭외 제가 하고 싶었는데 ㅠㅠ 뷰라님 아까 아이디어 낸 거 보니까 홍보 진짜 잘하실 것 같아요!"},
-      {who:"me",text:"그럼 제가 홍보 할게요! 대신 섭외 회의도 껴줘요 ㅋㅋ"},
-      {who:"d",text:"당연하죠 ㅋㅋ 기획은 다 같이!"}]}
-  ]},
-  {notice:[["총괄 기획","한서윤"],["무대·연출","오하은"],["티켓·운영","정민재"],["아티스트 섭외","최도윤"],["홍보·마케팅","김뷰라"]]},
-  {who:"t",text:"파트는 나눠도 기획은 다 같이예요. 다음 주까지 공연 기획안 + 각자 파트 계획 하나씩 준비해 오세요!"},
-  {who:"s",text:"넵!!"},
+  {who:"ar",text:"영상이랑 홍보까지요? 사실 저희한테 제일 필요한 거예요. 진행할게요! 🙌"},
+  {go:"group", preview:"최도윤: 뷰라님 {A} 쪽 어떻게 됐어요?"},
+  {who:"d",text:"뷰라님 {A} 쪽 어떻게 됐어요?"},
+  {who:"me",text:"섭외 성공!! 🎉 ***만 원 + 공연 영상·사진 제공 조건이에요"},
+  {card:{by:"s",title:"🎤 아티스트 섭외 확정", rows:[
+    ["공연","〈{T}〉"],["아티스트","{A}"],["개런티","***만 원"],["조건","공연 영상·사진 원본 + SNS 홍보"]
+  ], foot:"섭외 완료 ✓"}},
+  {who:"h",text:"와 진짜 공연이 만들어지고 있다… 이제 관객만 모으면 돼요!"},
   {choice:"뷰라의 마지막 한마디", opts:[
-    {me:"와 근데 우리 진짜 공연 올리는 거야…? 아직 실감 안 나 ㅋㅋㅋ", then:[]},
-    {me:"벌써 다음 회의 기다려진다 ㅋㅋ 기획안 열심히 써올게요!", then:[]}
-  ]},
-  {who:"s",text:"진짜 올린다 ㅋㅋㅋ 대관부터 무대까지 다 우리 손으로"}
+    {me:"홍보는 제가 해볼게요! {A}님 매력 제대로 알려봐요 🔥", then:[]},
+    {me:"그럼 다음 주부터 홍보 시작! 제가 맡아볼게요", then:[]}
+  ]}
 ];
 /* ========================================== */
 
@@ -580,7 +603,7 @@ $("#bHome").onclick=()=>show("home");
 $("#applyBtn").onclick=function(){
   if(this.classList.contains("done"))return;this.textContent="신청 중…";
   setTimeout(()=>{this.textContent="신청 완료 ✓";this.classList.add("done");toast("🎉 35기 신청이 완료됐어요!");
-    setTimeout(()=>{kakaoOpen=true;banner("kakao","공연기획 35기","박지훈 강사님이 김뷰라님을 초대했습니다.",()=>{show("kakao");playChat()})},1500)},900);
+    setTimeout(()=>{kakaoOpen=true;banner("kakao","35기 공연 회의방","한서윤님이 김뷰라님을 초대했습니다.",()=>{show("kakao");playChat()})},1500)},900);
 };
 function banner(ic,title,text,onTap){
   const b=$("#banner");
@@ -590,53 +613,75 @@ function banner(ic,title,text,onTap){
   b.classList.add("on");
 }
 
-/* ---------- 단톡방 ---------- */
-let chatStarted=false,chatSeen=false,queue=[],last=null,timer=null,waiting=false,fixedTime=null,finished=false;
-const chat=$("#chat");
-function scrollDown(){chat.scrollTo({top:chat.scrollHeight,behavior:"smooth"})}
+/* ---------- 단톡방 / 1:1방 ---------- */
+let chatStarted=false,chatSeen=false,queue=[],timer=null,waiting=false,fixedTime=null,finished=false;
+let room="group", artist=null, TITLE="첫 번째 커튼콜";
+const panes={group:$("#chat"),dm:$("#chatD")}, lastWho={group:null,dm:null};
+function pane(){return panes[room]}
+function fill(t){return (t||"").replace(/\{A\}/g,artist?artist.name:"").replace(/\{T\}/g,TITLE)}
+function scrollDown(){const p=pane();p.scrollTo({top:p.scrollHeight,behavior:"smooth"})}
 function msgTime(){return fixedTime||nowTime()}
+function setHead(){
+  $("#kTitle").innerHTML=room==="group"?`35기 공연 회의방<span>5</span>`:`${artist.mgr}`;
+  panes.group.style.display=room==="group"?"block":"none";
+  panes.dm.style.display=room==="dm"?"block":"none";
+}
+function person(who){if(who==="ar")return{name:artist.mgr,c:PEOPLE.ar.c,av:artist.name[0]};return PEOPLE[who]}
+function wrap(who,body){
+  const me=who==="me",p=me?null:person(who),t=msgTime(),el=document.createElement("div");
+  el.className="m"+(me?" me":"")+(lastWho[room]===who?" cont":"");
+  el.innerHTML=me?`<div><div class="row">${body}<span class="tm">${t}</span></div></div>`
+    :`<div class="pf" style="background:${p.c}">${p.av||p.name[0]}</div><div><div class="nm">${p.name}</div><div class="row">${body}<span class="tm">${t}</span></div></div>`;
+  lastWho[room]=who;pane().appendChild(el);scrollDown();return el;
+}
 function addMsg(it){
-  const t=msgTime();let el=document.createElement("div");
-  if(it.sys){el.className="sys";el.innerHTML=`<span>${it.sys}</span>`;last=null}
-  else if(it.day){el.className="day";el.innerHTML=`<span>${it.day}</span>`;last=null;fixedTime=it.time||null}
-  else{
-    const who=it.notice?"t":it.who,me=who==="me",p=PEOPLE[who];
-    let body=it.notice
-      ?`<div class="notice"><div class="h">📌 공지 · 파트 분담</div><ul>${it.notice.map(r=>`<li>${r[0]} : ${r[1]==="김뷰라"?`<b>${r[1]}</b>`:r[1]}</li>`).join("")}</ul><div class="f">공지 자세히 보기</div></div>`
-      :`<div class="bub">${it.text}</div>`;
-    el.className="m"+(me?" me":"")+(last===who?" cont":"");
-    el.innerHTML=me?`<div><div class="row">${body}<span class="tm">${t}</span></div></div>`
-      :`<div class="pf" style="background:${p.c}">${p.name[0]}</div><div><div class="nm">${p.name}</div><div class="row">${body}<span class="tm">${t}</span></div></div>`;
-    last=who;
-  }
-  chat.appendChild(el);scrollDown();
+  if(it.sys){const el=document.createElement("div");el.className="sys";el.innerHTML=`<span>${fill(it.sys)}</span>`;lastWho[room]=null;pane().appendChild(el);scrollDown();return}
+  if(it.day){const el=document.createElement("div");el.className="day";el.innerHTML=`<span>${it.day}</span>`;lastWho[room]=null;fixedTime=it.time||null;pane().appendChild(el);scrollDown();return}
+  if(it.topic){const el=document.createElement("div");el.className="topic";el.innerHTML=`<span>${it.topic}</span>`;lastWho[room]=null;pane().appendChild(el);scrollDown();return}
+  if(it.card){const c=it.card;
+    wrap(c.by||"s",`<div class="kcard"><div class="h">${fill(c.title)}</div>${c.rows.map(r=>`<div class="r"><b>${r[0]}</b><span>${fill(r[1])}</span></div>`).join("")}<div class="f">${c.foot}</div></div>`);return}
+  if(it.cands){
+    wrap("d",`<div class="kcard"><div class="h">🎤 섭외 후보 3팀</div>${ARTISTS.map((a,i)=>`<div class="cand"><div class="cav" style="background:${["#3d5a80","#b5838d","#6b9080"][i]}">${a.name[0]}</div><div><b>${a.name}</b><small>${a.genre}</small><p>${a.note}</p></div></div>`).join("")}<div class="f">콘셉트 · 목표 기준으로 추림</div></div>`);return}
+  wrap(it.who,`<div class="bub">${fill(it.text)}</div>`);
 }
 function schedule(ms){clearTimeout(timer);timer=setTimeout(next,ms)}
-function waitFor(it){const len=(it.text||"").length;return it.day?900:it.notice?2600:Math.min(2600,800+len*32)}
+function readTime(it){const len=fill(it.text).length;return it.topic?2600:it.day?1500:(it.card||it.cands)?5200:Math.min(4200,1400+len*48)}
+let typingEl=null;
+function typing(who){
+  const p=person(who);typingEl=document.createElement("div");typingEl.className="m"+(lastWho[room]===who?" cont":"");
+  typingEl.innerHTML=`<div class="pf" style="background:${p.c}">${p.av||p.name[0]}</div><div><div class="nm">${p.name}</div><div class="row"><div class="bub typing"><i></i><i></i><i></i></div></div></div>`;
+  pane().appendChild(typingEl);scrollDown();
+}
 function next(){
-  if(!queue.length){if(!finished){finished=true;setTimeout(()=>banner("set","소프트웨어 업데이트","새로운 업데이트가 곧 도착합니다. 탭해서 확인하기",()=>$("#sheet").classList.add("on")),2200)}return}
+  if(waiting)return;
+  if(!queue.length){if(!finished){finished=true;setTimeout(()=>banner("set","소프트웨어 업데이트","2편 '홍보편' 업데이트가 곧 도착합니다. 탭해서 확인하기",()=>$("#sheet").classList.add("on")),2200)}return}
   const it=queue.shift();
   if(it.choice){showChoice(it);return}
   if(it.poll){showPoll(it.poll);return}
-  addMsg(it);schedule(waitFor(it));
+  if(it.go==="dm"){room="dm";setHead();toast(`💬 ${artist.name} 측에 연락하는 중…`);schedule(1200);return}
+  if(it.go==="group"){waiting=true;
+    banner("kakao","35기 공연 회의방",fill(it.preview),()=>{waiting=false;room="group";setHead();scrollDown();schedule(700)});return}
+  // 다른 사람 메시지는 입력 중 표시 먼저
+  if(it.who&&it.who!=="me"&&!it.card&&!it.cands){
+    typing(it.who);
+    timer=setTimeout(()=>{typingEl&&typingEl.remove();typingEl=null;addMsg(it);schedule(readTime(it))},it.who==="ar"?1800:1100);return}
+  addMsg(it);schedule(readTime(it));
 }
 function showChoice(it){
   waiting=true;const box=$("#choices");
   box.innerHTML=`<div class="q">💬 <b>뷰라</b> ${it.choice}</div>`;
-  it.opts.forEach(o=>{const b=document.createElement("button");b.textContent=o.me;
-    b.onclick=()=>{box.classList.remove("on");chat.style.bottom="72px";waiting=false;
-      addMsg({who:"me",text:o.me});queue.unshift(...o.then);schedule(1100)};
+  it.opts.forEach(o=>{const b=document.createElement("button");b.textContent=fill(o.me);
+    b.onclick=()=>{box.classList.remove("on");pane().style.bottom="72px";waiting=false;
+      if(o.set!==undefined)artist=ARTISTS[o.set];
+      addMsg({who:"me",text:o.me});queue.unshift(...o.then);schedule(2200)};
     box.appendChild(b)});
   box.classList.add("on");
-  requestAnimationFrame(()=>{chat.style.bottom=(72+box.offsetHeight)+"px";scrollDown()});
+  requestAnimationFrame(()=>{pane().style.bottom=(72+box.offsetHeight)+"px";scrollDown()});
 }
 function showPoll(p){
   waiting=true;
   const total=()=>p.opts.reduce((s,o)=>s+o[1],0);
-  const el=document.createElement("div");el.className="m";
-  const t=PEOPLE.t;
-  el.innerHTML=`<div class="pf" style="background:${t.c}">${t.name[0]}</div><div><div class="nm">${t.name}</div><div class="row"><div class="poll live"><div class="h">🗳️ ${p.title}<small>👆 뷰라도 투표해 주세요!</small></div>${p.opts.map((o,i)=>`<button class="opt" data-i="${i}"><i></i><span><b style="font-weight:inherit">${o[0]}</b><em style="font-style:normal;color:#888">${o[1]}</em></span></button>`).join("")}<div class="f">${total()}명 참여</div></div><span class="tm">${msgTime()}</span></div></div>`;
-  chat.appendChild(el);last="t";scrollDown();
+  const el=wrap("mg",`<div class="poll live"><div class="h">🗳️ ${p.title}<small>👆 뷰라도 투표해 주세요!</small></div>${p.opts.map((o,i)=>`<button class="opt" data-i="${i}"><i></i><span><b style="font-weight:inherit">${o[0]}</b><em style="font-style:normal;color:#888">${o[1]}</em></span></button>`).join("")}<div class="f">${total()}명 참여</div></div>`);
   const poll=el.querySelector(".poll");
   el.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
     if(!poll.classList.contains("live"))return;
@@ -644,11 +689,15 @@ function showPoll(p){
     const tot=total();
     el.querySelectorAll(".opt").forEach((x,j)=>{x.querySelector("em").textContent=p.opts[j][1];setTimeout(()=>x.querySelector("i").style.width=(p.opts[j][1]/tot*100)+"%",50)});
     el.querySelector(".h small").textContent="투표 완료 ✓";el.querySelector(".f").textContent=`${tot}명 참여`;
-    waiting=false;schedule(1500);
+    if(p.key==="title"){const max=Math.max(...p.opts.map(o=>o[1]));TITLE=p.opts[i][1]===max?p.opts[i][0]:p.opts.find(o=>o[1]===max)[0]}
+    waiting=false;schedule(2200);
   });
 }
-function playChat(){chatSeen=true;if(chatStarted)return;chatStarted=true;chat.innerHTML="";queue=CHAT.map(x=>x);last=null;schedule(600)}
-chat.addEventListener("click",e=>{if(e.target.closest(".opt"))return;if(chatStarted&&!waiting&&queue.length){clearTimeout(timer);next()}});
+function playChat(){chatSeen=true;if(chatStarted)return;chatStarted=true;room="group";setHead();panes.group.innerHTML="";queue=CHAT.map(x=>x);schedule(600)}
+Object.values(panes).forEach(p=>p.addEventListener("click",e=>{
+  if(e.target.closest(".opt"))return;
+  if(chatStarted&&!waiting&&queue.length&&!typingEl){clearTimeout(timer);next()}
+}));
 $("#kBack").onclick=()=>show("home");
 $("#nextVer").textContent=CONFIG.nextUpdate;
 
